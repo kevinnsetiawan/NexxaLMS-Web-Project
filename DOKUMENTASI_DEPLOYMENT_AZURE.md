@@ -97,7 +97,7 @@ Berikut adalah urutan kronologis pengerjaan yang sudah kita lakukan:
 ---
 
 ### Tahap D: Otomatisasi Instalasi Dependency & Nginx (via Skrip)
-Kita masuk ke folder proyek di VM (`cd /var/www/project-lms`) dan menjalankan skrip setup:
+Kita masuk ke folder proyek di VM (`cd /var/www/project-lms`) and menjalankan skrip setup:
 ```bash
 sudo chmod +x setup-server.sh
 sudo ./setup-server.sh
@@ -156,6 +156,40 @@ Setelah skrip selesai, kita melakukan konfigurasi internal Laravel secara manual
    👉 **`http://70.153.81.133`**
 3. Pastikan halaman beranda LMS tampil tanpa error `500` (Server Error) atau `403` (Forbidden).
 4. Lakukan registrasi user baru untuk menguji apakah koneksi database SQLite berjalan dengan normal untuk aksi tulis (write) dan baca (read).
+
+---
+
+## 4. Konfigurasi Khusus untuk 4 Pilar Cloud Architecture
+Dalam ujian arsitektur cloud, Anda akan sering ditanya bagaimana konfigurasi VM atau portal Azure mendukung empat pilar: **Scalability, Security, Efficiency, dan Reliability**. Berikut adalah implementasi konkret dari apa yang sudah kita deploy:
+
+### A. Keamanan (Security)
+Keamanan aplikasi dan infrastruktur kita diatur melalui beberapa lapisan:
+*   **Keamanan Jaringan (Azure NSG)**: Mengikuti konsep *least-privilege ports*, kita hanya membuka port yang benar-benar dibutuhkan (`22` untuk SSH administrasi, `80` untuk HTTP akses web, dan `443` untuk HTTPS aman). Port lainnya ditutup secara default oleh Azure firewall.
+*   **Keamanan Web Root (Nginx Block)**: Nginx hanya mengarah ke folder `/public` Laravel. Ini membatasi akses publik agar file sensitif sistem seperti `.env` (yang berisi password & key) tidak dapat diakses langsung oleh user dari browser.
+*   **Perizinan File Sistem (Permissions)**: Hak akses folder diatur ke `775` (dapat dibaca/ditulis oleh owner dan grup) dan file database ke `664`. Kepemilikan diubah ke `www-data` agar hanya web server yang bisa mengubah data, mencegah eksploitasi oleh user Linux tidak dikenal lainnya.
+*   **Production Hardening (`.env`)**: Mematikan mode debug dengan menyetel `APP_DEBUG=false` di `.env`. Ini mencegah Laravel menampilkan pesan error detail (stack trace) yang berisi informasi sensitif database/struktur direktori kepada publik saat terjadi error.
+
+### B. Skalabilitas (Scalability)
+Meskipun saat ini aplikasi berjalan di VM tunggal (Single VM) dengan SQLite, sistem ini dapat diskalakan saat beban meningkat:
+*   **Skalabilitas Vertikal (Scaling Up)**: Mengubah spesifikasi VM di Azure Portal (misal: menaikkan dari tier `Standard B2ats` yang memiliki 2 vCPU & 1 GB RAM ke spesifikasi yang lebih tinggi tanpa perlu menginstal ulang server dari awal).
+*   **Skalabilitas Horizontal (Scaling Out)**: 
+    *   **Langkah Konfigurasi**: Kita dapat memigrasi database SQLite ke **Azure Database for MySQL (Flexible Server)** terlebih dahulu. 
+    *   Setelah database terpisah secara eksternal, kita dapat menggunakan **Azure Virtual Machine Scale Sets (VMSS)** bersama **Azure Load Balancer** untuk menduplikasi VM secara otomatis saat traffic tinggi.
+
+### C. Efisiensi & Kinerja (Efficiency)
+Efisiensi penggunaan resource CPU, memori, dan bandwidth di VM dioptimalkan melalui:
+*   **Laravel Caching**: Kita menggunakan caching bawaan Laravel saat tahap akhir deploy:
+    *   `php artisan config:cache` (menggabungkan semua konfigurasi menjadi satu file agar tidak dibaca berulang kali dari disk).
+    *   `php artisan route:cache` (mempercepat proses pencarian rute web).
+    *   `php artisan view:cache` (mengompilasi semua file blade sebelum digunakan).
+*   **PHP 8.3-FPM**: Menggunakan FPM yang jauh lebih hemat RAM dibanding modul PHP Apache (Prefork), karena memisahkan proses penanganan HTTP request dan eksekusi skrip PHP secara asinkron.
+*   **Composer Optimization**: Perintah `composer install --no-dev --optimize-autoloader` memastikan library testing development (`--no-dev`) tidak ikut terinstal di server dan membuat classmap autoload menjadi statis untuk menghemat waktu pembacaan file.
+
+### D. Keandalan (Reliability)
+Keandalan sistem agar aplikasi tetap online dan minim downtime diatur melalui:
+*   **Proses Systemd Auto-Restart**: Nginx dan PHP-FPM berjalan sebagai system service di Ubuntu. Jika salah satu service mendadak crash, systemd akan otomatis mencoba menyalakannya kembali di latar belakang.
+*   **Azure VM Backup**: Anda dapat mengaktifkan **Azure Backup** di portal Azure untuk membuat snapshot VM secara berkala. Jika VM Anda mengalami kerusakan OS, Anda dapat me-restore VM tersebut ke keadaan sehat hanya dalam beberapa menit.
+*   **Database Persistence**: Karena SQLite menggunakan file tunggal (`database.sqlite`) di dalam VM, data bersifat aman dan persisten di dalam disk Azure selama VM tidak dihapus. Ini berbeda dengan Azure App Service (ephemeral) yang akan kehilangan file SQLite saat container di-restart.
 
 ---
 
