@@ -63,10 +63,9 @@
     </main>
 
     <!-- Footer -->
-    <footer style="background: rgba(8, 12, 24, 0.95); border-top: 1px solid var(--border-glass); padding: 3rem 0; margin-top: 5rem; text-align: center; font-size: 0.9rem; color: var(--text-muted);">
+    <footer style="background: rgba(8, 12, 24, 0.95); border-top: 1px solid var(--border-glass); padding: 2rem 0; margin-top: 5rem; text-align: center; font-size: 0.9rem; color: var(--text-muted);">
         <div class="container">
-            <p>&copy; {{ date('Y') }} NovaLMS. Built with Laravel & Premium Vanilla CSS.</p>
-            <p style="margin-top: 0.5rem; font-size: 0.8rem;">Designed to elevate digital learning experiences.</p>
+            <p>&copy; {{ date('Y') }} NexaLearn. All rights reserved.</p>
         </div>
     </footer>
 </body>
