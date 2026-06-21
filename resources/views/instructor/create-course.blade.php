@@ -51,16 +51,9 @@
                 </div>
             </div>
 
-            <div class="grid-2" style="gap: 1.5rem; margin-bottom: 1.5rem;">
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="price" class="form-label">Price (USD)</label>
-                    <input type="number" step="0.01" name="price" id="price" class="form-input" placeholder="e.g. 19.99 (0 for free)" value="{{ old('price', '0.00') }}" required>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="image_url" class="form-label">Cover Image URL (Optional)</label>
-                    <input type="url" name="image_url" id="image_url" class="form-input" placeholder="https://images.unsplash.com/..." value="{{ old('image_url') }}">
-                </div>
+            <div class="form-group">
+                <label for="image_url" class="form-label">Cover Image URL (Optional)</label>
+                <input type="url" name="image_url" id="image_url" class="form-input" placeholder="https://images.unsplash.com/..." value="{{ old('image_url') }}">
             </div>
 
             <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 0.9rem;">

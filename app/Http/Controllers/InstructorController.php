@@ -26,15 +26,13 @@ class InstructorController extends Controller
 
         // Calculate statistics
         $totalStudents = 0;
-        $totalEarnings = 0;
+        $totalCourses = $courses->count();
 
         foreach ($courses as $course) {
-            $enrollmentsCount = $course->enrollments->count();
-            $totalStudents += $enrollmentsCount;
-            $totalEarnings += $enrollmentsCount * $course->price;
+            $totalStudents += $course->enrollments->count();
         }
 
-        return view('instructor.dashboard', compact('courses', 'totalStudents', 'totalEarnings'));
+        return view('instructor.dashboard', compact('courses', 'totalStudents', 'totalCourses'));
     }
 
     public function createCourse()
@@ -52,7 +50,6 @@ class InstructorController extends Controller
             'description' => ['required', 'string'],
             'category_id' => ['required', 'exists:categories,id'],
             'level' => ['required', 'in:beginner,intermediate,advanced'],
-            'price' => ['required', 'numeric', 'min:0'],
             'image_url' => ['nullable', 'url'],
         ]);
 
@@ -63,7 +60,7 @@ class InstructorController extends Controller
             'category_id' => $request->category_id,
             'instructor_id' => $user->id,
             'level' => $request->level,
-            'price' => $request->price,
+            'price' => 0.00,
             'image_url' => $request->image_url ?? 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=600&auto=format&fit=crop',
             'status' => 'published', // Publish instantly for ease of demo
         ]);
@@ -165,7 +162,6 @@ class InstructorController extends Controller
             'description' => ['required', 'string'],
             'category_id' => ['required', 'exists:categories,id'],
             'level' => ['required', 'in:beginner,intermediate,advanced'],
-            'price' => ['required', 'numeric', 'min:0'],
             'image_url' => ['nullable', 'url'],
         ]);
 
@@ -175,7 +171,7 @@ class InstructorController extends Controller
             'description' => $request->description,
             'category_id' => $request->category_id,
             'level' => $request->level,
-            'price' => $request->price,
+            'price' => 0.00,
             'image_url' => $request->image_url ?? $course->image_url,
         ]);
 

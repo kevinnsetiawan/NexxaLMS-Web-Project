@@ -68,23 +68,11 @@
                         </p>
                     </div>
 
-                    <!-- Footer Row: Instructor, Price, and Action -->
+                    <!-- Footer Row: Instructor and Action -->
                     <div style="border-top: 1px solid var(--border-glass); padding-top: 1rem; margin-top: auto;">
-                        <div class="flex-between">
-                            <div class="flex-align gap-2">
-                                <img src="{{ $course->instructor->avatar }}" alt="{{ $course->instructor->name }}" style="width: 30px; height: 30px; border-radius: 50%;">
-                                <span style="font-size: 0.85rem; font-weight: 500;">{{ $course->instructor->name }}</span>
-                            </div>
-                            
-                            <div style="text-align: right;">
-                                <div style="font-size: 1.15rem; font-weight: 800; color: var(--secondary);">
-                                    @if($course->price == 0)
-                                        Free
-                                    @else
-                                        ${{ number_format($course->price, 2) }}
-                                    @endif
-                                </div>
-                            </div>
+                        <div class="flex-align gap-2">
+                            <img src="{{ $course->instructor->avatar }}" alt="{{ $course->instructor->name }}" style="width: 30px; height: 30px; border-radius: 50%;">
+                            <span style="font-size: 0.85rem; font-weight: 500;">{{ $course->instructor->name }}</span>
                         </div>
                         
                         <a href="{{ route('courses.show', $course->slug) }}" class="btn btn-primary" style="width: 100%; margin-top: 1.25rem; padding: 0.6rem 1rem;">

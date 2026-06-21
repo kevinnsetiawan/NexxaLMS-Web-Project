@@ -117,22 +117,7 @@
                 </div>
             </div>
 
-            <!-- Pricing info -->
-            <div style="margin-bottom: 1.5rem;">
-                <div style="font-size: 0.85rem; color: var(--text-muted);">Course Price</div>
-                <div class="flex-align gap-2" style="margin-top: 0.25rem;">
-                    <span style="font-size: 2.25rem; font-weight: 800; color: var(--text-primary);">
-                        @if($course->price == 0)
-                            Free
-                        @else
-                            ${{ number_format($course->price, 2) }}
-                        @endif
-                    </span>
-                    @if($course->price > 0)
-                        <span class="text-muted" style="text-decoration: line-through; font-size: 1.1rem; margin-left: 0.5rem;">${{ number_format($course->price * 1.5, 2) }}</span>
-                    @endif
-                </div>
-            </div>
+
 
             <!-- Main Button Action -->
             @if($isEnrolled)

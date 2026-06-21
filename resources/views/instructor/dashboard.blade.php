@@ -34,10 +34,10 @@
 
             <!-- Stat 2 -->
             <div class="glass-card" style="padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem; border-radius: var(--radius-md); transform: none; background: rgba(0,0,0,0.2);">
-                <div class="stat-icon" style="background: hsla(145, 80%, 45%, 0.2); color: var(--success);"><i class="ph ph-currency-dollar"></i></div>
+                <div class="stat-icon" style="background: hsla(280, 80%, 45%, 0.2); color: var(--accent);"><i class="ph ph-books"></i></div>
                 <div>
-                    <div style="font-size: 1.25rem; font-weight: 800;">${{ number_format($totalEarnings, 2) }}</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted);">Est. Earnings</div>
+                    <div style="font-size: 1.25rem; font-weight: 800;">{{ $totalCourses }}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Total Courses</div>
                 </div>
             </div>
         </div>
@@ -77,8 +77,6 @@
                         <!-- Mini stats rows -->
                         <div style="display: flex; gap: 1rem; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.5rem; border-top: 1px solid var(--border-glass); border-bottom: 1px solid var(--border-glass); padding: 0.5rem 0;">
                             <div><i class="ph ph-student"></i> <strong>{{ $course->enrollments->count() }}</strong> students</div>
-                            <div>•</div>
-                            <div>Price: <strong>${{ number_format($course->price, 2) }}</strong></div>
                         </div>
                     </div>
 
